@@ -1,3 +1,4 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import app from "./app.data";
 
 export const randomNumber = (min = 0, max = 9) => {
@@ -28,4 +29,13 @@ export function stringToArrayBuffer(str) {
         bufView[i] = str.charCodeAt(i);
     }
     return buf;
+}
+
+
+export function NavigateBack(times) {
+    const navigate = useNavigate();
+    const location = useLocation();
+    if (location.state?.from?.pathname) {
+        navigate(-1);
+    }
 }

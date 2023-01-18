@@ -1,7 +1,7 @@
 {
-    "short_name": "Tasks",
-    "name": "To do - Tasks",
-    "description": "Manage lists of all your daily tasks.",
+    "short_name": "MeChat",
+    "name": "Chat app - MeChat",
+    "description": "Chat with anyone easily.",
     "icons": [
         {
             "src": "favicon-16x16.png",
