@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { MobileView } from 'react-device-detect';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import app from '../app.data';
 import { setTitle } from '../app.functions';
 import { auth } from '../fb.user';
@@ -29,7 +29,9 @@ function Default() {
                     </div>
                 </div>
             </MobileView>}
-            {user && <Handle />}
+            {user && <Routes>
+                <Route path="/*" element={<Handle user={user} />} />
+            </Routes>}
         </>
     )
 }

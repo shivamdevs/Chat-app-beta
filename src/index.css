@@ -41,6 +41,9 @@ html {
 
 :root {
     --background-color: #11191f;
+    --background-light: #141e26;
+    --background-lighter: #18232c;
+    --background-lightest: #202d38;
     --color-default: #fff;
     --border-color: #1f2d38;
 }
