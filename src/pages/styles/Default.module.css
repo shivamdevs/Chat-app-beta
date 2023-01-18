@@ -1,0 +1,44 @@
+.mvParent {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+    padding: 20px;
+    justify-content: space-between;
+}
+.mbHeader {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+.mbIcon {
+    width: 40px;
+}
+.mbText {
+    display: inline-block;
+    font-size: 25px;
+    font-weight: 500;
+}
+.mbLottie {
+    width: 100%;
+    max-width: 300px;
+}
+.mbButton {
+    font-weight: 500;
+    font-size: 17px;
+}
+.mbBottom {
+    display: block;
+    text-align: center;
+    margin-block: 20px;
+}
+.mbBottom a {
+    color: #3ac7f7;
+    text-decoration: none;
+    transition: .2s;
+    font-size: 500;
+    font-size: 15px;
+}
+.mbBottom :hover {
+    color: #8be9b9;
+}

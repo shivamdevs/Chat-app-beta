@@ -1,0 +1,8 @@
+.loading {
+    position: absolute;
+    inset: 0;
+    background-color: var(--background-color);
+}
+.loading > svg {
+    width: 40px;
+}

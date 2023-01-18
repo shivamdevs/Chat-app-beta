@@ -1,0 +1,47 @@
+.loadSVG {
+    width: 100%;
+    height: 100%;
+}
+.flexcenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+.viewport {
+    min-height: 100%;
+    max-height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-wrap: nowrap;
+}
+.viewport > * {
+    flex: 1;
+}
+.opbutton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 15px 20px;
+    border-radius: 5px;
+    width: 100%;
+    transition: .2s ease;
+    background-color: #596b78;
+    border: none;
+}
+.opbutton:disabled {
+    opacity: .7;
+    cursor: not-allowed;
+}
+.opbutton:not(:disabled):hover {
+    background-color: #73828c;
+    cursor: pointer;
+}
+.opbutton.blue {
+    background-color: #1095c1;
+}
+.opbutton.blue:not(:disabled):hover {
+    background-color: #19b3e6;
+    cursor: pointer;
+}
