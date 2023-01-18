@@ -1,4 +1,5 @@
 import React from 'react';
+import { LoadSVG } from '../layouts/Loading';
 import css from './styles/Users.module.css';
 
 function Users({user = {}}) {
@@ -12,6 +13,10 @@ function Users({user = {}}) {
                     <button className="crbutton"><i className="far fa-search"></i></button>
                     <button className={css.user}><img src={user.photoURL || "https://assets.myoasis.tech/accounts/user-no-image.svg"} alt="" /></button>
                 </div>
+            </div>
+            <div className={css.nullload}>
+                <LoadSVG />
+                <span>Getting your previous chats...</span>
             </div>
         </div>
     )

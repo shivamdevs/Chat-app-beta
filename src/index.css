@@ -45,6 +45,7 @@ html {
     --background-lighter: #18232c;
     --background-lightest: #202d38;
     --color-default: #fff;
+    --color-darker: #73828c;
     --border-color: #1f2d38;
 }
 :root, html, body {
