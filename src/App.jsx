@@ -7,7 +7,6 @@ import Loading from "./layouts/Loading";
 import './App.css';
 import Default from "./pages/Default";
 import Accounts from "myoasis-accounts";
-import Handle from "./layouts/Handle";
 
 function App() {
     const navigate = useNavigate();
