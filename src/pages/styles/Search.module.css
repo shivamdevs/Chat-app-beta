@@ -1,0 +1,121 @@
+.header {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 0 !important;
+    transition: .2s;
+}
+
+.headtop {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
+    --fix: 40px;
+}
+
+.proxy {
+    width: var(--fix);
+    text-align: center;
+    font-size: 14px;
+    color: var(--color-darker);
+    padding-top: 10px;
+    padding-right: calc((1/4) * var(--fix));
+}
+
+.search {
+    width: calc(100% + 20px);
+    margin-left: calc(-10px - var(--fix));
+    margin-right: -10px;
+    margin-bottom: -10px;
+    height: 35px;
+    border: none;
+    outline: none;
+    background: none;
+    padding: 0;
+    padding-inline: calc(10px + var(--fix)) 20px;
+    transition: .2s;
+}
+
+.header:has(.search:focus) {
+    border-bottom-color: var(--theme-blue);
+}
+
+.nullhead {
+    font-weight: 500;
+    padding: 10px;
+    color: var(--theme-green);
+}
+
+.nullhead:has(+ .usrow) {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nullload {
+    text-align: center;
+    width: 100%;
+    padding: 30px 10px;
+    color: var(--color-darker);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.usrow {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding: 5px 10px;
+    --pattern: 40px;
+    transition: .2s;
+}
+.usrow:hover {
+    cursor: pointer;
+    background-color: var(--background-lighter);
+}
+
+.usphoto {
+    width: var(--pattern);
+    height: var(--pattern);
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.usphoto>img {
+    background-color: var(--background-lightest);
+    padding: 4px;
+    border-radius: 50%;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.usphoto:has(> img.waiting) {
+    background-color: var(--background-lightest);
+    background-image: url("https://assets.myoasis.tech/accounts/user-no-image.svg");
+    background-position: center;
+    background-size: 36px;
+    background-repeat: no-repeat;
+}
+
+img.waiting {
+    display: none;
+}
+.usname {
+    display: inline-block;
+    flex: 1;
+    max-width: calc(100% - 40px);
+    padding-inline: 10px;
+    font-weight: 500;
+}
+.usname > span {
+    color: var(--theme-green);
+}
+.usdot {
+    padding-inline: 8px;
+    line-height: 14px;
+    font-size: 12px;
+    display: inline-block;
+    border-radius: 8px;
+    background-color: var(--theme-blue);
+}

@@ -26,10 +26,10 @@ function Users({ user = {}, chatHistory = null , back = null, navigate = null })
                 </div>}
                 {chatHistory?.length === 0 && <div className={css.nullload}>
                     <span>You don't have any chat history yet!</span>
-                    <span>Start a new chat from the button below.</span>
+                    <span>Start a new chat now.</span>
                 </div>}
                 {chatHistory?.length > 0 && chatHistory.map((item, i) => <div key={`${i}${item.id}`} className={css.column}>
-                    <Ripples className={css.uhData} color={rippleColor} onClick={() => navigate(`/${item.id}`)}>
+                    <Ripples className={css.uhData} color={rippleColor} onClick={() => navigate(`/${item.to}`)}>
                         <div className={css.uhToprow}>
                             <div className={classNames('ellipsis', css.uhTopname)}>{item.by}</div>
                             <div className={css.uhToptime}>{item.at}</div>
@@ -39,7 +39,8 @@ function Users({ user = {}, chatHistory = null , back = null, navigate = null })
                     <Ripples className={css.uhPhoto} color={rippleColor} onClick={() => navigate(`/preview/${encodeURIComponent(item.as)}#${encodeURI(item.by)}`)}>
                         <img
                             alt=""
-                            src={item.as}
+                            src={item.as || "https://assets.myoasis.tech/accounts/user-no-image.svg"}
+                            className={css.waiting}
                             onLoad={({target}) => target.classList.remove(css.waiting)}
                             onError={({ target }) => target.classList.add(css.waiting)}
                         />
