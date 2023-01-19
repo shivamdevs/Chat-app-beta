@@ -4,7 +4,7 @@ import reactStringReplace from 'react-string-replace';
 import { Ripple, setTitle } from '../app.functions';
 import css from './styles/Search.module.css';
 
-function Search({back = null, navigate = null, users = [], history = []}) {
+function Search({back = null, navigate = null, users = [], history = [], me = null}) {
     setTitle("Search users");
     const [search, setSearch] = useState("");
     const [result, setResult] = useState(null);
@@ -57,7 +57,7 @@ function Search({back = null, navigate = null, users = [], history = []}) {
                 </>}
                 {result?.length > 0 && <>
                     <div className={css.nullhead}>Search results</div>
-                    {result.map(user => <div key={user.id} className={css.usrow} onClick={() => navigate(`/${user.id}`, true)}>
+                    {result.map(user => <div key={user.id} className={css.usrow} onClick={() => navigate(`/${user.id}dd`, true)}>
                         <div className={css.usphoto}>
                             <img
                                 alt=""
@@ -68,7 +68,8 @@ function Search({back = null, navigate = null, users = [], history = []}) {
                             />
                         </div>
                         <div className={classNames(css.usname, "ellipsis")}>{reactStringReplace(user.name, search, (match, i) => <span key={i}>{match}</span>)}</div>
-                        {!history?.includes(user.id) && <div className={css.usdot}>new</div>}
+                        {(me?.uid !== user.uid) && !history?.includes(user.id) && <div className={css.usdot}>New</div>}
+                        {(me?.uid === user.uid) && <div className={classNames(css.usdot, css.usdotnet)}>You</div>}
                     </div>)}
                     <div className={css.nullload}>{result.length} user{result.length > 1 ? "s" : ""} matched with the search query.</div>
                 </>}

@@ -10,10 +10,9 @@ import Handle from '../layouts/Handle';
 import css from './styles/Default.module.css';
 
 function Default() {
-    setTitle("Welcome");
     const [user] = useAuthState(auth);
     const navigate = useNavigate();
-    if (user) {}
+    if (!user) { setTitle("Welcome"); }
     return (
         <>
             {!user && <MobileView className={css.mvParent}>

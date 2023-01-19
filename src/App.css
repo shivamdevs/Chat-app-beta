@@ -102,6 +102,9 @@ section.section {
     flex-direction: column;
     flex-wrap: nowrap;
     width: 100%;
+    position: fixed;
+    inset: 0;
+    background-color: var(--background-color);
 }
 
 header.header {

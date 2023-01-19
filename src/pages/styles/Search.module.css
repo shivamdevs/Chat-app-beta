@@ -113,9 +113,14 @@ img.waiting {
 }
 .usdot {
     padding-inline: 8px;
-    line-height: 14px;
+    line-height: 16px;
     font-size: 12px;
     display: inline-block;
     border-radius: 8px;
     background-color: var(--theme-blue);
+    color: var(--background-color);
+    font-weight: 700;
+}
+.usdotnet {
+    background-color: var(--theme-green);
 }

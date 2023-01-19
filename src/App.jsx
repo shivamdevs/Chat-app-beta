@@ -28,7 +28,7 @@ function App() {
 
     return (
         <>
-            <Toaster />
+            <Toaster position="bottom-center" />
             <BrowserView className="desktopView viewport">
                 <Routes>
                     <Route path="/accounts/*" element={<Accounts onUserChange={() => navigateBack()} />} />
