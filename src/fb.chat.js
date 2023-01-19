@@ -1,4 +1,4 @@
-import { doc, onSnapshot } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
 import { collection, query, where } from "firebase/firestore";
 import { db } from "./fb.user";
 
