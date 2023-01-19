@@ -2,12 +2,14 @@
     width: 100%;
     height: 100%;
 }
+
 .flexcenter {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
 }
+
 .viewport {
     min-height: 100%;
     max-height: 100%;
@@ -15,9 +17,11 @@
     display: flex;
     flex-wrap: nowrap;
 }
-.viewport > * {
+
+.viewport>* {
     flex: 1;
 }
+
 .opbutton {
     display: flex;
     justify-content: center;
@@ -30,17 +34,21 @@
     background-color: #596b78;
     border: none;
 }
+
 .opbutton:disabled {
     opacity: .7;
     cursor: not-allowed;
 }
+
 .opbutton:not(:disabled):hover {
     background-color: #73828c;
     cursor: pointer;
 }
+
 .opbutton.blue {
     background-color: #1095c1;
 }
+
 .opbutton.blue:not(:disabled):hover {
     background-color: #19b3e6;
     cursor: pointer;
@@ -54,23 +62,63 @@
     justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
-    font-size: 20px;
+    font-size: 18px;
     background-color: none;
     user-select: none;
     text-decoration: none;
     border: none;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     background: none;
     border-radius: 50%;
     border: none;
     transition: .2s;
 }
+
 .crbutton:disabled {
     opacity: .7;
     cursor: not-allowed;
 }
+
 .crbutton:not(:disabled):hover {
     cursor: pointer;
     background-color: var(--background-lightest);
+}
+
+
+.ripples {
+    border-radius: 50%;
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+section.section {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+header.header {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 3px solid var(--border-color);
+    background-color: var(--background-light);
+}
+
+main.mainbody {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden auto;
 }

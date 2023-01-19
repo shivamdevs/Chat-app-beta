@@ -1,8 +1,10 @@
 import classNames from 'classnames';
 import React from 'react';
+import { setTitle } from '../app.functions';
 import css from './styles/Loading.module.css';
 
 function Loading() {
+    setTitle("Loading");
     return (
         <div className={classNames('flexcenter', css.loading)}>
             <LoadSVG />

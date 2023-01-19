@@ -40,11 +40,14 @@ html {
 }
 
 :root {
+    --theme-blue: #3ac7f7;
+    --theme-green: #8be9b9;
     --background-color: #11191f;
     --background-light: #141e26;
     --background-lighter: #18232c;
     --background-lightest: #202d38;
     --color-default: #fff;
+    --color-dark: #acbac3;
     --color-darker: #73828c;
     --border-color: #1f2d38;
 }

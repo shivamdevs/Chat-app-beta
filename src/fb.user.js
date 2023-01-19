@@ -2,12 +2,9 @@ import { initializeApp } from "firebase/app";
 import {
     getAuth,
     updateProfile,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
     signOut
 } from "firebase/auth";
-import { getFirestore } from 'firebase/firestore/lite';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAuT7owM2lF6JqmWUionKIM1vQ2pOHgzRM",
@@ -44,35 +41,6 @@ const clarifyError = (text) => {
     }
 };
 
-const logInWithEmailAndPassword = async (email, password) => {
-    try {
-        const data = await signInWithEmailAndPassword(auth, email, password);
-        return {
-            type: "success",
-            action: "signin",
-            data: data.user
-        }
-    } catch (err) {
-        console.error(err);
-        return clarifyError(err);
-    }
-};
-
-const registerWithEmailAndPassword = async (name, email, password) => {
-    try {
-        const data = await createUserWithEmailAndPassword(auth, email, password);
-        await updateUserProfile(data.user, {displayName: name});
-        return {
-            type: "success",
-            action: "signup",
-            data: data.user
-        }
-    } catch (err) {
-        console.error(err);
-        return clarifyError(err);
-    }
-};
-
 const updateUserProfile = async (user, {
     phoneNumber = "",
     displayName = "",
@@ -95,16 +63,6 @@ const updateUserProfile = async (user, {
     }
 };
 
-const sendPasswordReset = async (email) => {
-    try {
-        await sendPasswordResetEmail(auth, email);
-        return true;
-    } catch (err) {
-        console.error(err);
-        return err;
-    }
-};
-
 const logout = async () => {
     await signOut(auth);
 };
@@ -113,9 +71,6 @@ export {
     db,
     auth,
     updateUserProfile,
-    logInWithEmailAndPassword,
-    registerWithEmailAndPassword,
-    sendPasswordReset,
     logout,
     clarifyError,
 };
