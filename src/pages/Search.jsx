@@ -57,7 +57,7 @@ function Search({back = null, navigate = null, users = [], history = [], me = nu
                 </>}
                 {result?.length > 0 && <>
                     <div className={css.nullhead}>Search results</div>
-                    {result.map(user => <div key={user.id} className={css.usrow} onClick={() => navigate(`/${user.id}dd`, true)}>
+                    {result.map(user => <div key={user.id} className={css.usrow} onClick={() => navigate(`/${user.id}`, true)}>
                         <div className={css.usphoto}>
                             <img
                                 alt=""
