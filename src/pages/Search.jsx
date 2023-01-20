@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import reactStringReplace from 'react-string-replace';
-import { Ripple, setTitle } from '../app.functions';
+import { setTitle } from '../app.functions';
 import css from './styles/Search.module.css';
 
-function Search({back = null, navigate = null, users = [], history = [], me = null}) {
+function Search({ back = null, navigate = null, users = [], history = [], me = null }) {
     setTitle("Search users");
     const [search, setSearch] = useState("");
     const [result, setResult] = useState(null);
@@ -17,7 +17,7 @@ function Search({back = null, navigate = null, users = [], history = [], me = nu
             for (const key in users) {
                 if (Object.hasOwnProperty.call(users, key)) {
                     const user = users[key];
-                    if (user.name.toLowerCase().includes(search.toLowerCase()) || user.id.includes(search)) loop.push(user);
+                    if (user.name.toLowerCase().includes(search.toLowerCase()) || user.id === search) loop.push(user);
                 }
             }
             setResult(loop);
@@ -26,13 +26,11 @@ function Search({back = null, navigate = null, users = [], history = [], me = nu
 
     return (
         <section className='section'>
-            <header className={classNames("header",css.header)}>
+            <header className={classNames("header", css.header)}>
                 <div className={css.headtop}>
-                    <Ripple>
-                        <button className="crbutton" onClick={back}>
-                            <i className="far fa-arrow-left"></i>
-                        </button>
-                    </Ripple>
+                    <button className="crbutton" onClick={back}>
+                        <i className="far fa-arrow-left"></i>
+                    </button>
                 </div>
                 <div className={css.headtop}>
                     <span className={css.proxy}><i className="fas fa-search"></i></span>
@@ -41,8 +39,7 @@ function Search({back = null, navigate = null, users = [], history = [], me = nu
                         className={css.search}
                         autoFocus={true}
                         placeholder="Search..."
-                        onChange={({target}) => setSearch(target.value.trim())}
-                        onBlur={({target}) => target.focus()}
+                        onChange={({ target }) => setSearch(target.value.trim())}
                     />
                 </div>
             </header>

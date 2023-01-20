@@ -69,11 +69,15 @@ html {
 
 :root {
     --theme-blue: #3ac7f7;
+    --theme-blue-dark: #0099cd;
     --theme-green: #8be9b9;
+    --theme-red: #e51010;
+    --theme-red-dark: #c62828;
     --background-color: #11191f;
     --background-light: #141e26;
     --background-lighter: #18232c;
     --background-lightest: #202d38;
+    --background-transparent: #11191faa;
     --color-default: #fff;
     --color-dark: #acbac3;
     --color-darker: #73828c;

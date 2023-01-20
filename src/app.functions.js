@@ -1,5 +1,4 @@
 import app from "./app.data";
-import Ripples from 'react-ripples';
 
 export const randomNumber = (min = 0, max = 9) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -29,9 +28,4 @@ export function stringToArrayBuffer(str) {
         bufView[i] = str.charCodeAt(i);
     }
     return buf;
-}
-
-export const rippleColor = "#fff2";
-export function Ripple({children}) {
-    return (<Ripples className="ripples" color={rippleColor}>{children}</Ripples>);
 }

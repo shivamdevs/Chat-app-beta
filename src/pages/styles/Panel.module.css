@@ -1,0 +1,49 @@
+.user {
+    display: inline-flex;
+    flex: 1;
+    flex-wrap: nowrap;
+    align-items: center;
+    max-width: calc(100% - 50px);
+    gap: 10px;
+    --pattern: 40px;
+    transition: .2s;
+    border-radius: 25px 5px 5px 25px;
+}
+.user:hover {
+    background-color: var(--background-lightest);
+    cursor: pointer;
+}
+
+.photo {
+    width: var(--pattern);
+    height: var(--pattern);
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.photo>img {
+    background-color: var(--background-lightest);
+    padding: 4px;
+    border-radius: 50%;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.photo:has(> img.waiting) {
+    background-color: var(--background-lightest);
+    background-image: url("https://assets.myoasis.tech/accounts/user-no-image.svg");
+    background-position: center;
+    background-size: 36px;
+    background-repeat: no-repeat;
+}
+
+img.waiting {
+    display: none;
+}
+
+.name {
+    max-width: calc(100% - 10px - var(--pattern));
+    display: inline-block;
+    font-weight: 500;
+    font-size: 17px;
+}

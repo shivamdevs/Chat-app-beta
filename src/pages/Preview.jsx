@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Route, Routes, useLocation, useParams } from 'react-router-dom';
-import { Ripple, setTitle } from '../app.functions';
+import { setTitle } from '../app.functions';
 import css from './styles/Preview.module.css';
 
 function Preview({ back = null }) {
@@ -10,11 +10,9 @@ function Preview({ back = null }) {
     return (
         <section className="section">
             <header className="header">
-                <Ripple>
-                    <button className="crbutton" onClick={back}>
-                        <i className="far fa-arrow-left"></i>
-                    </button>
-                </Ripple>
+                <button className="crbutton" onClick={back}>
+                    <i className="far fa-arrow-left"></i>
+                </button>
                 {location.hash.length > 0 && <div className={classNames("ellipsis", css.title)}>{decodeURI(location.hash.slice(1))}</div>}
             </header>
             <main className={classNames("mainbody", css.content)}>

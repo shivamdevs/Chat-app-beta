@@ -3,7 +3,7 @@ import { isMobile } from 'react-device-detect';
 import { toast } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
-import snapShot from '../fb.chat';
+import snapShot, { setCurrentBond } from '../fb.chat';
 import Users from '../pages/Users';
 
 function Handle({ user = null }) {
@@ -13,7 +13,7 @@ function Handle({ user = null }) {
     const navigateTo = useCallback((to, replace = false) => {
         setTimeout(() => {
             navigate(to, { replace });
-        }, 150);
+        }, 20);
     }, [navigate]);
     const navigateBack = useCallback(() => {
         if (location.key !== "default") {
@@ -24,11 +24,12 @@ function Handle({ user = null }) {
     }, [location.key, navigateTo]);
 
     const [chatHistory, setChatHistory] = useState(null);
+    const [userBondids, setUserBondids] = useState(null);
     const [usersDetails, setUsersDetails] = useState(null);
     const [usersHistory, setUsersHistory] = useState(null);
 
     const [loading, setLoading] = useState(true);
-    const [bond, setBond] = useState(null);
+    const [friend, setFriend] = useState(null);
 
 
     const callbackError = useCallback((error) => {
@@ -36,17 +37,28 @@ function Handle({ user = null }) {
     }, []);
 
     useEffect(() => {
-        user && snapShot(user, bond, ({ history, users }) => {
+        user && snapShot(user, ({ history, users }) => {
+            setUserBondids(history?.bondid);
             setChatHistory(history?.current);
             setUsersHistory(history?.contact);
             setUsersDetails(users);
             console.log(history, users);
         }, callbackError);
-    }, [bond, callbackError, user]);
+    }, [callbackError, user, userBondids]);
 
     useEffect(() => {
-        if (chatHistory !== null && usersDetails !== null && usersHistory !== null) setLoading(false);
-    }, [chatHistory, usersDetails, usersHistory]);
+        if (userBondids) {
+            if (friend) {
+                setCurrentBond(userBondids[friend.id] ?? null);
+            } else {
+                setCurrentBond(undefined);
+            }
+        }
+    }, [friend, userBondids]);
+
+    useEffect(() => {
+        if (chatHistory !== null && usersDetails !== null && usersHistory !== null && userBondids !== null) setLoading(false);
+    }, [chatHistory, userBondids, usersDetails, usersHistory]);
     return (
         <>
             {isMobile && loading && <Users user={user} />}
@@ -56,7 +68,8 @@ function Handle({ user = null }) {
                     loading={loading}
                     back={navigateBack}
                     navigate={navigateTo}
-                    setBond={setBond}
+                    friend={friend}
+                    setFriend={setFriend}
                     chatHistory={chatHistory}
                     usersHistory={usersHistory}
                     usersDetails={usersDetails}

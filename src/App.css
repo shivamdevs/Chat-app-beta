@@ -106,6 +106,13 @@ section.section {
     inset: 0;
     background-color: var(--background-color);
 }
+section.transparent {
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    overflow: auto;
+    background-color: var(--background-transparent);
+}
 
 header.header {
     display: flex;
@@ -124,4 +131,72 @@ main.mainbody {
     display: flex;
     flex-direction: column;
     overflow: hidden auto;
+}
+.transparent > main.mainbody {
+    flex: initial;
+    width: 100%;
+    max-width: 320px;
+    background-color: var(--background-lightest);
+    border-radius: 4px;
+    padding: 10px;
+    gap: 10px;
+    box-shadow: 0 0 10px 5px #0003;
+}
+
+.tstitle {
+    font-weight: 500;
+    font-size: 18px;
+}
+.tsbody {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-dark);
+}
+.tsoptions {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.tsbutton {
+    display: inline-flex;
+    padding: 10px 20px;
+    font-weight: 500;
+    color: var(--theme-green);
+    background: none;
+    border-style: none;
+    transition: .2s;
+    border-radius: 6px;
+}
+.tsbutton:disabled {
+    cursor: not-allowed;
+    opacity: .7;
+}
+.tsbutton:not(:disabled):hover {
+    cursor: pointer;
+    background-color: var(--background-lighter);
+}
+
+.tsbutton[type=submit] {
+    cursor: pointer;
+    background-color: var(--theme-blue);
+    color: var(--background-color);
+}
+.tsbutton[type=submit]:not(:disabled):hover {
+    cursor: pointer;
+    background-color: var(--theme-green);
+}
+
+.tsbutton[type=reset] {
+    cursor: pointer;
+    background-color: var(--theme-red);
+    color: var(--background-color);
+}
+
+.tsbutton[type=reset]:not(:disabled):hover {
+    cursor: pointer;
+    background-color: var(--theme-red-dark);
 }

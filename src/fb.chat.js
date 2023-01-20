@@ -1,14 +1,24 @@
 import { onSnapshot } from "firebase/firestore";
 import { collection, query, where } from "firebase/firestore";
+import app from "./app.data";
 import { db } from "./fb.user";
 
-const table = "chat-chats";
+const table = {
+    connect:"chat-connects",
+    message: "chat-messages",
+};
 
 function snapHistory(user, resolve, reject) {
-    const q = query(collection(db, table), where(user.uid, "==", user.uid));
+    const q = query(collection(db, table.connect), where(user.uid, "==", user.uid));
     const snap = onSnapshot(q, resolve, reject);
     return snap;
-};
+}
+
+// function snapChats(bind, resolve, reject) {
+//     const q = query(collection(db, table.message), where("connect", "==", bind));
+//     const snap = onSnapshot(q, resolve, reject);
+//     return snap;
+// }
 
 function snapUsers(resolve, reject) {
     const snap = onSnapshot(collection(db, "users"), resolve, reject);
@@ -16,8 +26,10 @@ function snapUsers(resolve, reject) {
 }
 
 let querysnap = null;
+// let querychatsnap = null;
+let currentbond = undefined;
 
-export default function snapShot(user, bond, resolve, reject) {
+export default function snapShot(user, resolve, reject) {
     if (!querysnap) {
         querysnap = {
             history: {
@@ -26,6 +38,7 @@ export default function snapShot(user, bond, resolve, reject) {
                         querysnap.history.values = {
                             current: [],
                             contact: [],
+                            bondid: {},
                         };
                         if (!snap.empty) {
                             snap.docs.sort((a, b) => a.data().updated - b.data().updated).reverse().forEach(shots => {
@@ -42,10 +55,10 @@ export default function snapShot(user, bond, resolve, reject) {
                                     as: sender?.profile,
                                     at: data.updated,
                                 };
+                                querysnap.history.values.bondid[to] = shots.id;
                                 querysnap.history.values.contact.push(to);
-                                querysnap.history.current.push(push);
+                                querysnap.history.values.current.push(push);
                             });
-                            querysnap.history.values = snap.docs;
                         }
                         callback();
                     }
@@ -76,4 +89,42 @@ export default function snapShot(user, bond, resolve, reject) {
         });
     }
     callback();
+}
+
+export function setCurrentBond(bond) {
+    console.log(currentbond);
+    currentbond = bond;
+    console.log(currentbond);
+}
+
+// export function snapMessageChannel(resolve, reject) {
+//     if (!querychatsnap) {
+//         //querychatsnap = snapUsers();
+//     }
+// }
+
+
+
+let bufferMessages = {};
+
+if (window.localStorage) {
+    let buffer = window.localStorage.getItem(`${app.bucket}:buffer:messages`);
+    if (buffer !== null) {
+        try {
+            buffer = JSON.parse(buffer);
+            bufferMessages = buffer;
+        } catch (error) {}
+    }
+}
+
+export function setBufferMesage(key, value) {
+    if (value) {
+        bufferMessages[key] = value;
+    } else {
+        delete bufferMessages[key];
+    }
+    if (window.localStorage) window.localStorage.setItem(`${app.bucket}:buffer:messages`, JSON.stringify(bufferMessages));
+}
+export function getBufferMesage(key) {
+    return bufferMessages[key];
 }
