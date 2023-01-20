@@ -39,6 +39,12 @@
     font-size: 500;
     font-size: 15px;
 }
-.mbBottom :hover {
+.mbBottom a:hover {
     color: #8be9b9;
+}
+.mbVersion {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-darker);
+    text-align: center;
 }
