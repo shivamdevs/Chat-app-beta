@@ -49,18 +49,13 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
+html {
+    height: -webkit-fill-available;
+}
+
 img {
     max-width: 100%;
     max-height: 100%;
-}
-
-body {
-    position: fixed;
-    inset: 0;
-}
-
-html {
-    height: -webkit-fill-available;
 }
 
 #root {
@@ -77,6 +72,7 @@ html {
     --background-light: #141e26;
     --background-lighter: #18232c;
     --background-lightest: #202d38;
+    --background-chat: #344451;
     --background-transparent: #11191faa;
     --color-default: #fff;
     --color-dark: #acbac3;

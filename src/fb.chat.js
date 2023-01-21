@@ -1,10 +1,13 @@
-import { onSnapshot } from "firebase/firestore";
+import { addDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { collection, query, where } from "firebase/firestore";
 import app from "./app.data";
 import { db } from "./fb.user";
+import uniqid from 'uniqid';
+import CryptoJS from "crypto-js";
+
 
 const table = {
-    connect:"chat-connects",
+    connect: "chat-connects",
     message: "chat-messages",
 };
 
@@ -14,20 +17,12 @@ function snapHistory(user, resolve, reject) {
     return snap;
 }
 
-// function snapChats(bind, resolve, reject) {
-//     const q = query(collection(db, table.message), where("connect", "==", bind));
-//     const snap = onSnapshot(q, resolve, reject);
-//     return snap;
-// }
-
 function snapUsers(resolve, reject) {
     const snap = onSnapshot(collection(db, "users"), resolve, reject);
     return snap;
 }
 
 let querysnap = null;
-// let querychatsnap = null;
-let currentbond = undefined;
 
 export default function snapShot(user, resolve, reject) {
     if (!querysnap) {
@@ -35,31 +30,7 @@ export default function snapShot(user, resolve, reject) {
             history: {
                 event: snapHistory(user, snap => {
                     if (querysnap.history.values === null || snap.docChanges().length) {
-                        querysnap.history.values = {
-                            current: [],
-                            contact: [],
-                            bondid: {},
-                        };
-                        if (!snap.empty) {
-                            snap.docs.sort((a, b) => a.data().updated - b.data().updated).reverse().forEach(shots => {
-                                const data = shots.data();
-                                const to = (() => {
-                                    if (user.uid === data.users[0]) return data.users[1];
-                                    if (user.uid === data.users[1]) return data.users[0];
-                                })();
-                                const sender = querysnap.users.values[to];
-                                const push = {
-                                    id: shots.id,
-                                    to,
-                                    by: sender?.name,
-                                    as: sender?.profile,
-                                    at: data.updated,
-                                };
-                                querysnap.history.values.bondid[to] = shots.id;
-                                querysnap.history.values.contact.push(to);
-                                querysnap.history.values.current.push(push);
-                            });
-                        }
+                        querysnap.history.values = snap.docs.sort((a, b) => a.data().updated - b.data().updated).reverse();
                         callback();
                     }
                 }, reject),
@@ -68,13 +39,7 @@ export default function snapShot(user, resolve, reject) {
             users: {
                 event: snapUsers(snap => {
                     if (querysnap.users.values === null || snap.docChanges().length) {
-                        querysnap.users.values = {};
-                        if (!snap.empty) {
-                            snap.docs.forEach((users) => {
-                                const data = users.data();
-                                querysnap.users.values[users.id] = { ...data, id: users.id };
-                            });
-                        }
+                        querysnap.users.values = snap.docs;
                         callback();
                     }
                 }, reject),
@@ -83,25 +48,90 @@ export default function snapShot(user, resolve, reject) {
         };
     }
     function callback() {
-        resolve({
-            history: querysnap.history.values,
-            users: querysnap.users.values,
-        });
+        const result = {
+            bondid: {},
+            current: [],
+            contact: [],
+            users: {},
+        };
+        if (querysnap.history.values) {
+            querysnap.history.values.forEach(shots => {
+                const data = shots.data();
+                const to = (() => {
+                    if (user.uid === data.users[0]) return data.users[1];
+                    if (user.uid === data.users[1]) return data.users[0];
+                })();
+                const sender = (() => {
+                    if (!querysnap.users.values) return;
+                    const ops = querysnap.users.values[to];
+                    return ops;
+                })();
+                const push = {
+                    id: shots.id,
+                    to: to,
+                    by: sender,
+                    me: (to !== data.sender),
+                    at: data.updated,
+                    on: data.content,
+                    en: data.encrypt,
+                };
+                result.bondid[to] = shots.id;
+                result.contact.push(to);
+                result.current.push(push);
+            });
+        } else {
+            result.bondid = null;
+            result.current = null;
+            result.contact = null;
+        }
+        if (querysnap.users.values) {
+            querysnap.users.values.forEach((users) => {
+                const data = users.data();
+                result.users[data.uid] = data;
+            });
+        } else {
+            result.users = null;
+        }
+        resolve(result);
     }
     callback();
 }
 
-export function setCurrentBond(bond) {
-    console.log(currentbond);
-    currentbond = bond;
-    console.log(currentbond);
-}
 
-// export function snapMessageChannel(resolve, reject) {
-//     if (!querychatsnap) {
-//         //querychatsnap = snapUsers();
-//     }
-// }
+function snapChats(bind, resolve, reject) {
+    const q = query(collection(db, table.message), where("connect", "==", bind));
+    const snap = onSnapshot(q, resolve, reject);
+    return snap;
+}
+let querychatsnap = null;
+
+export function snapMessageChannel(bond, resolve, reject) {
+    if (!querychatsnap) {
+        querychatsnap = {
+            event: snapChats(bond, (snap) => {
+                if (querychatsnap.values === null || snap.docChanges().length) {
+                    querychatsnap.values = [];
+                    if (!snap.empty) {
+                        snap.docs.forEach((chats) => {
+                            const data = chats.data();
+                            querychatsnap.values.push({ ...data, id: chats.id });
+                        });
+                    }
+                    callback();
+                }
+            }, reject),
+            values: null,
+        };
+    }
+    function callback() {
+        resolve(querychatsnap.values);
+    }
+    callback();
+}
+export function unsnapMessageChannel() {
+    querychatsnap?.event();
+    querychatsnap = null;
+}
 
 
 
@@ -113,7 +143,7 @@ if (window.localStorage) {
         try {
             buffer = JSON.parse(buffer);
             bufferMessages = buffer;
-        } catch (error) {}
+        } catch (error) { }
     }
 }
 
@@ -127,4 +157,58 @@ export function setBufferMesage(key, value) {
 }
 export function getBufferMesage(key) {
     return bufferMessages[key];
+}
+
+export async function sendMessage(message, connect, user, friend, before, reject) {
+    const date = (() => {
+        const d = new Date();
+        return {
+            now: d.getTime(),
+            date: new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(),
+            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")} ${d.getHours() < 12 ? "am" : "pm"}`,
+        };
+    })();
+    const me = { ...user };
+    const bond = { ...friend };
+    const encrypt = uniqid();
+    const post = {
+        sent: date.print,
+        groupby: date.date,
+        sortby: date.now,
+        content: CryptoJS.AES.encrypt(message, encrypt).toString(),
+        sender: user.uid,
+        connect: connect,
+        encrypt: encrypt,
+    };
+    before(post);
+    try {
+        if (!post.connect) {
+            const addbond = {
+                users: [
+                    me.uid,
+                    bond.uid,
+                ],
+                created: date.now,
+                updated: date.now,
+                content: post.content,
+                sender: user.uid,
+                encrypt: encrypt,
+            };
+            addbond[me.uid] = me.uid;
+            addbond[bond.uid] = bond.uid;
+            const getkey = await addDoc(collection(db, table.connect), addbond);
+            post.connect = getkey.id;
+        }
+        const updates = {
+            content: post.content,
+            updated: date.now,
+            sender: user.uid,
+            encrypt: encrypt,
+        }
+        await updateDoc(doc(db, table.connect, post.connect), updates);
+        await addDoc(collection(db, table.message), post);
+    } catch (error) {
+        console.error(error);
+        reject(error);
+    }
 }

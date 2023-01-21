@@ -2,18 +2,20 @@ import classNames from 'classnames';
 import React from 'react';
 import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { setTitle } from '../app.functions';
+import Section from '../layouts/Section';
 import css from './styles/Preview.module.css';
 
 function Preview({ back = null }) {
     const location = useLocation();
-    setTitle('Preview contents');
+    const username = decodeURI(location.hash.slice(1));
+    setTitle(username || 'Preview contents');
     return (
-        <section className="section">
+        <Section>
             <header className="header">
                 <button className="crbutton" onClick={back}>
                     <i className="far fa-arrow-left"></i>
                 </button>
-                {location.hash.length > 0 && <div className={classNames("ellipsis", css.title)}>{decodeURI(location.hash.slice(1))}</div>}
+                <div className={classNames("ellipsis", css.title)}>{username}</div>
             </header>
             <main className={classNames("mainbody", css.content)}>
                 <Routes>
@@ -21,7 +23,7 @@ function Preview({ back = null }) {
                     <Route path="/:source" element={<PreviewImage />} />
                 </Routes>
             </main>
-        </section>
+        </Section>
     )
 }
 

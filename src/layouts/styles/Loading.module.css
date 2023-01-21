@@ -2,6 +2,7 @@
     position: absolute;
     inset: 0;
     background-color: var(--background-light);
+    z-index: 111;
 }
 .loading > svg {
     width: 40px;

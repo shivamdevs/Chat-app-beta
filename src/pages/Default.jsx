@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import React from 'react';
-import { MobileView } from 'react-device-detect';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import app from '../app.data';
 import { setTitle } from '../app.functions';
 import { auth } from '../fb.user';
 import Handle from '../layouts/Handle';
+import Section from '../layouts/Section';
 import css from './styles/Default.module.css';
 
 function Default() {
@@ -15,7 +15,7 @@ function Default() {
     if (!user) { setTitle("Welcome"); }
     return (
         <>
-            {!user && <MobileView className={css.mvParent}>
+            {!user && <Section className={classNames(css.mvParent)}>
                 <div className={css.mbHeader}>
                     <img className={css.mbIcon} src="/logo192.png" alt="" />
                     <span className={css.mbText}>MeChat</span>
@@ -26,7 +26,7 @@ function Default() {
                     <div className={css.mbBottom}>By continuing to this website you agree to our <a href={app.pathname + "/legal"} target="_blank" rel="noopener noreferrer">Privacy policy</a> and <a href={app.pathname + "/legal/terms"} target="_blank" rel="noopener noreferrer">Terms of Usage</a>.</div>
                     <div className={css.mbVersion}>Version: {app.version}</div>
                 </div>
-            </MobileView>}
+            </Section>}
             {user && <Routes>
                 <Route path="/*" element={<Handle user={user} />} />
             </Routes>}

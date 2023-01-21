@@ -35,9 +35,11 @@
 .user:hover {
     cursor: pointer;
 }
-.user > img {
+
+.user>img {
     border-radius: 50%;
 }
+
 .nullload {
     margin-top: 30px;
     display: flex;
@@ -82,6 +84,7 @@
     width: var(--pattern);
     height: var(--pattern);
     padding: 5px;
+    z-index: 1;
 }
 
 .uhPhoto>img {
@@ -93,7 +96,6 @@
 }
 
 .uhPhoto:has(> img.waiting) {
-    background-color: var(--background-lightest);
     background-image: url("https://assets.myoasis.tech/accounts/user-no-image.svg");
     background-position: center;
     background-size: 50px;
@@ -116,7 +118,7 @@ img.waiting {
     font-weight: 500;
 }
 
-.uhToprow {
+.uhRow {
     display: flex;
     width: 100%;
     flex-wrap: nowrap;
@@ -140,10 +142,21 @@ img.waiting {
 
 .uhMessage {
     color: var(--color-darker);
-    width: 100%;
-    font-size: 14px;
+    flex: 1;
+    font-size: 13px;
     line-height: 20px;
     min-height: 20px;
+}
+
+.uhPending:not(:empty) {
+    color: var(--background-color);
+    background-color: var(--theme-blue);
+    font-size: 12px;
+    line-height: 12px;
+    min-width: 20px;
+    padding: 2px 6px;
+    font-weight: 700;
+    border-radius: 14px;
 }
 
 .footer {

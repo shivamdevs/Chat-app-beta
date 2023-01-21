@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import reactStringReplace from 'react-string-replace';
 import { setTitle } from '../app.functions';
+import Section from '../layouts/Section';
 import css from './styles/Search.module.css';
 
 function Search({ back = null, navigate = null, users = [], history = [], me = null }) {
@@ -25,7 +26,7 @@ function Search({ back = null, navigate = null, users = [], history = [], me = n
     }, [search, users]);
 
     return (
-        <section className='section'>
+        <Section>
             <header className={classNames("header", css.header)}>
                 <div className={css.headtop}>
                     <button className="crbutton" onClick={back}>
@@ -54,7 +55,7 @@ function Search({ back = null, navigate = null, users = [], history = [], me = n
                 </>}
                 {result?.length > 0 && <>
                     <div className={css.nullhead}>Search results</div>
-                    {result.map(user => <div key={user.id} className={css.usrow} onClick={() => navigate(`/${user.id}`, true)}>
+                    {result.map(user => <div key={user.uid} className={css.usrow} onClick={() => navigate(`/${user.uid}`, true)}>
                         <div className={css.usphoto}>
                             <img
                                 alt=""
@@ -71,7 +72,7 @@ function Search({ back = null, navigate = null, users = [], history = [], me = n
                     <div className={css.nullload}>{result.length} user{result.length > 1 ? "s" : ""} matched with the search query.</div>
                 </>}
             </main>
-        </section>
+        </Section>
     );
 }
 

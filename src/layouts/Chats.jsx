@@ -2,51 +2,103 @@ import classNames from 'classnames';
 import React, { useRef } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { getBufferMesage, setBufferMesage } from '../fb.chat';
+import { toast } from 'react-hot-toast';
+import { getBufferMesage, sendMessage, setBufferMesage } from '../fb.chat';
+import { LoadSVG } from './Loading';
 import css from './styles/Chats.module.css';
+import uniqid from 'uniqid';
+import CryptoJS from "crypto-js";
+import { getDisplayDate } from '../app.functions';
 
 function Chats({
+    user = null,
+    bond = null,
     friend = null,
+    messageList = null,
+    setMessageList = null,
 }) {
-    const [message, setMessage] = useState(getBufferMesage(friend.id) || "");
-    // const [tempMessage, setTempMessages] = [];
+    const [message, setMessage] = useState(getBufferMesage(friend.uid) || "");
+    const [showscroller, setScroller] = useState(false);
+    const [pendings, setPendings] = useState(0);
     const textbox = useRef();
+    const chatbox = useRef();
 
-    const sendMessage = () => {
-        const postmessage = message;
+    const sendData = () => {
+        const postmessage = message.trim();
         setMessage("");
         textbox.current && (textbox.current.value = "");
-        console.log(postmessage);
+        textbox.current && textbox.current.focus();
+        if (showscroller) scrollerAdapt();
+
+        sendMessage(postmessage, bond, user, friend, (snap) => {
+            const parent = (() => {
+                const d = new Date();
+                return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+            })();
+            const slip = {...snap};
+            slip.pending = true;
+            slip.id = uniqid();
+            setMessageList(old => {
+                const list = {...old};
+                if (!list[parent]) list[parent] = [];
+                list[parent].push(slip);
+                return list;
+            });
+        }, (error) => {
+            toast.error("Failed to send message.");
+        });
+    };
+
+    const scrollerAdapt = (smooth = false) => {
+        if (chatbox.current) {
+            chatbox.current.scrollTo({ behavior: (smooth ? "smooth" : "auto"), top: "0"});
+        }
     };
 
     useEffect(() => {
-        setBufferMesage(friend.id, message);
+        if (!showscroller) setPendings(0);
+    }, [showscroller, pendings]);
+    useEffect(() => {
+        setPendings(old => ++old);
+    }, [messageList]);
+
+    useEffect(() => {
+        setBufferMesage(friend.uid, message);
         if (textbox.current) {
             textbox.current.style.height = 0;
             textbox.current.style.height = (textbox.current.scrollHeight) + "px";
         }
-    }, [friend.id, message]);
+    }, [friend, message]);
 
-    useEffect(() => {
-
-    }, []);
     return (
         <>
-            <main className="mainbody">
-
-            </main>
+            {!messageList && <main className="mainbody">
+                <div className={css.nullload}>
+                    <LoadSVG />
+                    <span>Loading your chats with {friend?.name}</span>
+                </div>
+            </main>}
+            {messageList && <main ref={chatbox} className={classNames("mainbody", css.chatbox)} onScroll={({target}) => setScroller(target.scrollTop < -30)}>
+                <div className={css.chatflow}>
+                    {Object.keys(messageList).map(dates => <Dateblock key={dates} friend={friend} date={dates} chats={messageList[dates]} />)}
+                </div>
+            </main>}
             <footer className={css.messenger}>
+                {showscroller && <button className={classNames(css.tobottom, "crbutton")} onClick={scrollerAdapt}>
+                    <i className="fas fa-chevron-down"></i>
+                    {pendings > 0 && <span className={css.pendings}>{pendings}</span>}
+                </button>}
                 <div className={css.message}>
                     <textarea
                         ref={textbox}
                         className={css.textbox}
+                        autoFocus={true}
                         defaultValue={message}
                         placeholder="Enter your message..."
+                        // onBlur={({ target }) => target.focus()}
                         onChange={({ target }) => setMessage(target.value)}
-                        onBlur={({ target }) => target.focus()}
-                        autoFocus={true}
                     ></textarea>
-                    <button className={classNames("crbutton", css.send)} onClick={sendMessage} disabled={message.trim().length === 0 || message.length > 250}>
+                    <button className={classNames("crbutton", css.send)} onClick={sendData} disabled={message.trim().length === 0 || message.length > 250}>
                         <i className="far fa-paper-plane"></i>
                     </button>
                 </div>
@@ -57,3 +109,35 @@ function Chats({
 };
 
 export default Chats;
+
+function Dateblock({
+    date = null,
+    chats = null,
+    friend = null,
+}) {
+    return (
+        <div className={css.chatdates}>
+            <div className={css.dateblock}>
+                <div className={css.dateitem}>{getDisplayDate(+date, true)}</div>
+            </div>
+            {chats.map(chat => <Message key={chat.id} friend={friend} chat={chat} />)}
+        </div>
+    );
+}
+
+function Message({
+    chat = null,
+    friend = null,
+    observer = null,
+}) {
+    const block = useRef();
+    return (
+        <div className={classNames(css.chatblock, (chat.sender === friend.uid ? css.friend : css.current))} ref={block}>
+            {chat.pending && <span className={css.sending}><LoadSVG width={12} /></span>}
+            <div className={css.chatarea}>
+                <div className={css.messagebox}>{CryptoJS.AES.decrypt(chat.content, chat.encrypt).toString(CryptoJS.enc.Utf8)}</div>
+                <div className={css.timebox}>{chat.sent}</div>
+            </div>
+        </div>
+    );
+}

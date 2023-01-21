@@ -2,6 +2,7 @@
     background-color: var(--background-light);
     border-top: 1px solid var(--border-color);
     padding: 5px 10px;
+    position: relative;
 }
 
 .message {
@@ -27,9 +28,208 @@
     resize: none;
     padding: 10px 15px;
 }
+
+.send:not(:disabled) {
+    color: var(--theme-green);
+}
+
 .error {
     padding: 2px 10px;
     font-size: 13px;
     font-weight: 500;
     color: var(--theme-red);
+}
+
+.tobottom {
+    margin-left: auto;
+    position: absolute;
+    right: 10px;
+    bottom: calc(100% + 10px);
+    z-index: 1;
+    background-color: var(--theme-green);
+    color: var(--background-color);
+}
+
+.pendings {
+    position: absolute;
+    top: -7px;
+    left: -7px;
+    background-color: var(--theme-blue);
+    font-size: 12px;
+    line-height: 12px;
+    min-width: 20px;
+    padding: 2px 6px;
+    font-weight: 700;
+    border-radius: 14px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.chatbox {
+    padding-block: 8px;
+    flex-direction: column-reverse !important;
+    position: relative;
+}
+
+.chatflow {
+    flex: 1;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.chatdates {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatflow .chatdates:first-child {
+    flex: 1;
+}
+
+.dateblock {
+    margin-bottom: auto;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    padding-block: 10px;
+    margin-inline: auto;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.dateitem {
+    padding: 5px 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-darker);
+    background-color: var(--background-lighter);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.chatblock {
+    display: flex;
+    width: 100%;
+    padding: 2px 10px;
+    flex-wrap: nowrap;
+    gap: 5px;
+}
+
+.chatblock.friend {
+    flex-direction: row;
+}
+
+.chatblock.current {
+    flex-direction: row-reverse;
+}
+
+.chatblock.friend:has(+ .current),
+.chatblock.current:has(+ .friend) {
+    margin-bottom: 8px;
+}
+
+.chatarea {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 5px;
+    max-width: 80%;
+    min-width: 100px;
+    padding: 10px;
+    border-radius: 8px;
+    position: relative;
+    gap: 10px;
+}
+
+.chatblock.friend+.friend .chatarea {
+    border-top-left-radius: 0;
+}
+
+.chatblock.friend:has(+.friend) .chatarea {
+    border-bottom-left-radius: 0;
+}
+
+.chatblock.friend .chatarea {
+    background-color: var(--theme-blue);
+    color: var(--background-color);
+}
+
+.chatblock.current+.chatblock.current .chatarea {
+    border-top-right-radius: 0;
+}
+
+.chatblock.current:has(+.current) .chatarea {
+    border-bottom-right-radius: 0;
+}
+
+.chatblock.current .chatarea {
+    background-color: var(--background-chat);
+}
+
+.messagebox {
+    text-align: left;
+    white-space: pre-wrap;
+    max-width: 100%;
+}
+
+.chatblock.friend .messagebox {
+    font-weight: 500;
+}
+
+.timebox {
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: auto;
+}
+
+.sending {
+    width: 15px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.nullload {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    gap: 20px;
+    color: var(--color-darker);
+}
+
+.nullload>svg {
+    width: 40px;
 }

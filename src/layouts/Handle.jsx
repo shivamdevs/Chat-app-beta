@@ -3,7 +3,7 @@ import { isMobile } from 'react-device-detect';
 import { toast } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
-import snapShot, { setCurrentBond } from '../fb.chat';
+import snapShot from '../fb.chat';
 import Users from '../pages/Users';
 
 function Handle({ user = null }) {
@@ -24,12 +24,11 @@ function Handle({ user = null }) {
     }, [location.key, navigateTo]);
 
     const [chatHistory, setChatHistory] = useState(null);
-    const [userBondids, setUserBondids] = useState(null);
     const [usersDetails, setUsersDetails] = useState(null);
     const [usersHistory, setUsersHistory] = useState(null);
+    const [userBondids, setUserBondids] = useState(null);
 
     const [loading, setLoading] = useState(true);
-    const [friend, setFriend] = useState(null);
 
 
     const callbackError = useCallback((error) => {
@@ -37,24 +36,14 @@ function Handle({ user = null }) {
     }, []);
 
     useEffect(() => {
-        user && snapShot(user, ({ history, users }) => {
-            setUserBondids(history?.bondid);
-            setChatHistory(history?.current);
-            setUsersHistory(history?.contact);
+        user && snapShot(user, ({ bondid, current, contact, users }) => {
+            setUserBondids(bondid);
+            setChatHistory(current);
+            setUsersHistory(contact);
             setUsersDetails(users);
-            console.log(history, users);
+            // console.log(bondid, current, contact, users);
         }, callbackError);
-    }, [callbackError, user, userBondids]);
-
-    useEffect(() => {
-        if (userBondids) {
-            if (friend) {
-                setCurrentBond(userBondids[friend.id] ?? null);
-            } else {
-                setCurrentBond(undefined);
-            }
-        }
-    }, [friend, userBondids]);
+    }, [callbackError, user]);
 
     useEffect(() => {
         if (chatHistory !== null && usersDetails !== null && usersHistory !== null && userBondids !== null) setLoading(false);
@@ -68,9 +57,8 @@ function Handle({ user = null }) {
                     loading={loading}
                     back={navigateBack}
                     navigate={navigateTo}
-                    friend={friend}
-                    setFriend={setFriend}
                     chatHistory={chatHistory}
+                    userBondids={userBondids}
                     usersHistory={usersHistory}
                     usersDetails={usersDetails}
                 />} />
