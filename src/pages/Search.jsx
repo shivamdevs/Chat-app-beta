@@ -5,7 +5,7 @@ import { setTitle } from '../app.functions';
 import Section from '../layouts/Section';
 import css from './styles/Search.module.css';
 
-function Search({ back = null, navigate = null, users = [], history = [], me = null }) {
+function Search({ back = null, navigate = null, users = [], history = [], me = null, replace = false }) {
     setTitle("Search users");
     const [search, setSearch] = useState("");
     const [result, setResult] = useState(null);
@@ -55,7 +55,7 @@ function Search({ back = null, navigate = null, users = [], history = [], me = n
                 </>}
                 {result?.length > 0 && <>
                     <div className={css.nullhead}>Search results</div>
-                    {result.map(user => <div key={user.uid} className={css.usrow} onClick={() => navigate(`/${user.uid}`, true)}>
+                    {result.map(user => <div key={user.uid} className={css.usrow} onClick={() => navigate(`/${user.uid}`, replace)}>
                         <div className={css.usphoto}>
                             <img
                                 alt=""

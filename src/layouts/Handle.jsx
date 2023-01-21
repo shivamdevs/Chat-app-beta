@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { isMobile } from 'react-device-detect';
 import { toast } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
@@ -50,8 +49,8 @@ function Handle({ user = null }) {
     }, [chatHistory, userBondids, usersDetails, usersHistory]);
     return (
         <>
-            {isMobile && loading && <Users user={user} />}
-            {isMobile && !loading && <Routes>
+            {loading && <Users user={user} />}
+            {!loading && <Routes>
                 <Route path="/*" element={<Users
                     user={user}
                     loading={loading}

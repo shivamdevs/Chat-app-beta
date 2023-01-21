@@ -1,5 +1,12 @@
+.savewidth {
+    max-width: 400px;
+}
 .container {
     position: relative;
+}
+.undraw {
+    margin: auto;
+    max-width: 300px;
 }
 
 .headblock {

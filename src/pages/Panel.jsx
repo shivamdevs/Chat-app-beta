@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import groupBy from 'group-by';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
+import { isBrowser } from 'react-device-detect';
 import { toast } from 'react-hot-toast';
 import { Route, Routes, useParams } from 'react-router-dom';
 import sortBy from 'sort-by';
@@ -47,7 +48,7 @@ function Panel({
 
     return (
         <>
-            {buffer === true && <Section>
+            {buffer === true && <Section splitted={isBrowser} desktopview={isBrowser}>
                 <header className="header">
                     <button className="crbutton" onClick={back}>
                         <i className="far fa-arrow-left"></i>

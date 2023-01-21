@@ -32,6 +32,7 @@
     transition: .2s ease;
     background-color: #596b78;
     border: none;
+    margin-inline: auto;
 }
 
 .opbutton:disabled {
@@ -106,6 +107,50 @@ section.section {
     background-color: var(--background-color);
     z-index: 1;
 }
+
+div.sectionview {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 10px;
+    background-color: var(--background-dark);
+}
+
+div.sectionview>section.section {
+    max-width: 1000px;
+    max-height: 600px;
+    height: 100%;
+    width: 100%;
+    inset: initial;
+    position: initial;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px 5px #0005;
+}
+
+div.splitsection > section.section {
+    flex-direction: row;
+}
+div.splitsection > section.section > .sectioning {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+}
+div.splitsection > section.section > .sectioning-l {
+    max-width: 340px;
+    border-right: 1px solid var(--border-color);
+    height: 100%;
+}
+.sectioning > section {
+    position: absolute;
+}
+
 section.transparent {
     justify-content: center;
     align-items: center;
@@ -132,7 +177,8 @@ main.mainbody {
     flex-direction: column;
     overflow: hidden auto;
 }
-.transparent > main.mainbody {
+
+.transparent>main.mainbody {
     flex: initial;
     width: 100%;
     max-width: 320px;
@@ -147,11 +193,13 @@ main.mainbody {
     font-weight: 500;
     font-size: 18px;
 }
+
 .tsbody {
     font-size: 15px;
     font-weight: 500;
     color: var(--color-dark);
 }
+
 .tsoptions {
     display: flex;
     width: 100%;
@@ -161,6 +209,7 @@ main.mainbody {
     flex-wrap: wrap;
     gap: 10px;
 }
+
 .tsbutton {
     display: inline-flex;
     padding: 10px 20px;
@@ -171,10 +220,12 @@ main.mainbody {
     transition: .2s;
     border-radius: 6px;
 }
+
 .tsbutton:disabled {
     cursor: not-allowed;
     opacity: .7;
 }
+
 .tsbutton:not(:disabled):hover {
     cursor: pointer;
     background-color: var(--background-lighter);
@@ -185,6 +236,7 @@ main.mainbody {
     background-color: var(--theme-blue);
     color: var(--background-color);
 }
+
 .tsbutton[type=submit]:not(:disabled):hover {
     cursor: pointer;
     background-color: var(--theme-green);
@@ -199,4 +251,15 @@ main.mainbody {
 .tsbutton[type=reset]:not(:disabled):hover {
     cursor: pointer;
     background-color: var(--theme-red-dark);
+}
+a {
+    color: #3ac7f7;
+    text-decoration: none;
+    transition: .2s;
+    font-size: 500;
+    font-size: 15px;
+}
+
+a:hover {
+    color: #8be9b9;
 }
