@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
+import app from '../app.data';
 import { setTitle } from '../app.functions';
 import css from './styles/Loading.module.css';
 
@@ -8,6 +9,7 @@ function Loading() {
     return (
         <div className={classNames('flexcenter', css.loading)}>
             <LoadSVG />
+            <span className={css.version}>{app.version}<br />{new Date().toISOString()}</span>
         </div>
     )
 }

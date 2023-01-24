@@ -175,7 +175,7 @@ export async function createFriendBond(user, friend) {
         return {
             now: d.getTime(),
             date: new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(),
-            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")} ${d.getHours() < 12 ? "am" : "pm"}`,
+            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")}${d.getHours() < 12 ? "am" : "pm"}`,
         };
     })();
     const me = { ...user };
@@ -207,7 +207,7 @@ export async function sendMessage(message, connect, user, friend, before, reject
         return {
             now: d.getTime(),
             date: new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(),
-            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")} ${d.getHours() < 12 ? "am" : "pm"}`,
+            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")}${d.getHours() < 12 ? "am" : "pm"}`,
         };
     })();
     const me = { ...user };

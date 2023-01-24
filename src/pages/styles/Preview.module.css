@@ -1,29 +1,41 @@
 .content {
+    overflow: hidden !important;
+    padding: 10px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.zoomer {
+    position: absolute;
+    inset: 0;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
-    overflow: hidden !important;
-    padding: 10px;
-        background-position: center;
-            background-repeat: no-repeat;
 }
-.content:has(> .waiting) {
+
+.content:has(.waiting) {
     background-image: url(https://assets.myoasis.tech/icons/loading/dodgerblue.svg);
     background-size: 40px;
 }
-.content:has(> .broken) {
+
+.content:has(.broken) {
     background-size: 200px;
 }
-.content:has(> .broken)::after {
+
+.content:has(.broken)::after {
     content: "This content is broken.";
     color: var(--color-darker);
     margin-top: 150px;
     font-weight: 500;
     font-size: 14px;
 }
-.content:has(> .broken.image) {
+
+.content:has(.broken.image) {
     background-image: url(https://assets.myoasis.tech/chat/images/broken-image.svg);
 }
+
 .title {
     display: inline-block;
     font-weight: 500;

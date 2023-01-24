@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
+import PrismaZoom from 'react-prismazoom';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { setTitle } from '../app.functions';
 import Section from '../layouts/Section';
@@ -38,12 +39,14 @@ function PreviewImage({usersDetails = null, setUser = null}) {
         setUser(user);
     }, [setUser, user]);
     return (
-        <img
-            className={classNames(css.image, css.target, css.waiting)}
-            src={user.profile}
-            alt=""
-            onLoad={({ target }) => { target.classList.remove(css.waiting); target.classList.remove(css.broken); }}
-            onError={({ target }) => { target.classList.remove(css.waiting); target.classList.add(css.broken); }}
-        />
+        <PrismaZoom className={css.zoomer}>
+            <img
+                className={classNames(css.image, css.target, css.waiting)}
+                src={user.profile}
+                alt=""
+                onLoad={({ target }) => { target.classList.remove(css.waiting); target.classList.remove(css.broken); }}
+                onError={({ target }) => { target.classList.remove(css.waiting); target.classList.add(css.broken); }}
+            />
+        </PrismaZoom>
     );
 }
