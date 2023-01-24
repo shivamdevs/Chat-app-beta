@@ -2,12 +2,11 @@ import classNames from 'classnames';
 import groupBy from 'group-by';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { isBrowser } from 'react-device-detect';
 import { toast } from 'react-hot-toast';
 import { Route, Routes, useParams } from 'react-router-dom';
 import sortBy from 'sort-by';
 import { setTitle } from '../app.functions';
-import { snapMessageChannel, unsnapMessageChannel } from '../fb.chat';
+import { createFriendBond, snapMessageChannel, unsnapMessageChannel } from '../fb.chat';
 import Chats from '../layouts/Chats';
 import Section from '../layouts/Section';
 import Preview from './Preview';
@@ -30,12 +29,23 @@ function Panel({
     useEffect(() => {
         if (params?.bondid && usersDetails) {
             const bind = usersDetails[params.bondid];
-            if (bind) { setFriend(bind); setBuffer(true); setTitle(bind.name); setBond(userBondids[bind.uid] || null); } else { setBuffer(false); setTitle("Invalid token") }
+            if (bind) {
+                const ukey = userBondids[bind.uid];
+                if (ukey) {
+                    setFriend(bind);
+                    setBuffer(true);
+                    setTitle(bind.name);
+                    setBond(userBondids[bind.uid]);
+                } else {
+                    const bonds = createFriendBond(user, bind);
+                    if (!bonds.id) toast.error("Failed to create a friend id.");
+                }
+            } else { setBuffer(false); setTitle("Invalid token") }
         }
-    }, [friend, params, setBond, setFriend, userBondids, usersDetails]);
+    }, [friend, params, setBond, setFriend, user, userBondids, usersDetails]);
 
     useEffect(() => {
-        snapMessageChannel(bond, (snap) => {
+        bond && snapMessageChannel(bond, (snap) => {
             if (!snap) return setMessages(null);
             const msg = snap;
             msg.sort(sortBy("sortby", "groupby"));
@@ -48,12 +58,12 @@ function Panel({
 
     return (
         <>
-            {buffer === true && <Section splitted={isBrowser} desktopview={isBrowser}>
+            {buffer === true && <Section>
                 <header className="header">
                     <button className="crbutton" onClick={back}>
                         <i className="far fa-arrow-left"></i>
                     </button>
-                    <div className={css.user} onClick={() => navigate(`/${friend.uid}/preview/${encodeURIComponent(friend.profile)}#${encodeURI(friend.name)}`)}>
+                    <div className={css.user} onClick={() => navigate(`/${friend.uid}/profile/${friend.uid}`)}>
                         <div className={css.photo}>
                             <img
                                 alt=""
@@ -66,7 +76,7 @@ function Panel({
                         <div className={classNames(css.name, "ellipsis")}>{friend?.name}</div>
                     </div>
                 </header>
-                <Chats friend={friend} bond={bond} messageList={messages} setMessageList={setMessages} user={user} />
+                <Chats friend={friend} bond={bond} navigate={navigate} messageList={messages} setMessageList={setMessages} user={user} />
                 <Routes>
                     <Route path='/preview/*' element={<Preview back={back} />} />
                 </Routes>

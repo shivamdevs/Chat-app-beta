@@ -66,17 +66,19 @@ export default function snapShot(user, resolve, reject) {
                     const ops = querysnap.users.values[to];
                     return ops;
                 })();
+                result.bondid[to] = shots.id;
+                result.contact.push(to);
+
+                if (!data.sender) return;
                 const push = {
                     id: shots.id,
                     to: to,
                     by: sender,
-                    me: (to !== data.sender),
+                    me: (data.sender === user.uid),
                     at: data.updated,
                     on: data.content,
                     en: data.encrypt,
                 };
-                result.bondid[to] = shots.id;
-                result.contact.push(to);
                 result.current.push(push);
             });
         } else {
@@ -107,6 +109,10 @@ let querychatsnap = null;
 
 export function snapMessageChannel(bond, resolve, reject) {
     if (!querychatsnap) {
+        if (!bond) {
+            unsnapMessageChannel();
+            return callback();
+        }
         querychatsnap = {
             event: snapChats(bond, (snap) => {
                 if (querychatsnap.values === null || snap.docChanges().length) {
@@ -124,7 +130,7 @@ export function snapMessageChannel(bond, resolve, reject) {
         };
     }
     function callback() {
-        resolve(querychatsnap.values);
+        resolve(querychatsnap?.values);
     }
     callback();
 }
@@ -159,6 +165,42 @@ export function getBufferMesage(key) {
     return bufferMessages[key];
 }
 
+let friendBonding = null;
+
+export async function createFriendBond(user, friend) {
+    if (friendBonding) return "Still creating previous id";
+    friendBonding = true;
+    const date = (() => {
+        const d = new Date();
+        return {
+            now: d.getTime(),
+            date: new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(),
+            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")} ${d.getHours() < 12 ? "am" : "pm"}`,
+        };
+    })();
+    const me = { ...user };
+    const bond = { ...friend };
+    const addbond = {
+        users: [
+            me.uid,
+            bond.uid,
+        ],
+        created: date.now,
+        updated: date.now,
+    };
+    addbond[me.uid] = me.uid;
+    addbond[bond.uid] = bond.uid;
+    try {
+        const getkey = await addDoc(collection(db, table.connect), addbond);
+        friendBonding = null;
+        return getkey;
+    } catch (error) {
+        console.error(error);
+        friendBonding = null;
+        return error;
+    }
+}
+
 export async function sendMessage(message, connect, user, friend, before, reject) {
     const date = (() => {
         const d = new Date();
@@ -176,33 +218,24 @@ export async function sendMessage(message, connect, user, friend, before, reject
         groupby: date.date,
         sortby: date.now,
         content: CryptoJS.AES.encrypt(message, encrypt).toString(),
-        sender: user.uid,
+        sender: me.uid,
         connect: connect,
         encrypt: encrypt,
     };
     before(post);
     try {
         if (!post.connect) {
-            const addbond = {
-                users: [
-                    me.uid,
-                    bond.uid,
-                ],
-                created: date.now,
-                updated: date.now,
-                content: post.content,
-                sender: user.uid,
-                encrypt: encrypt,
-            };
-            addbond[me.uid] = me.uid;
-            addbond[bond.uid] = bond.uid;
-            const getkey = await addDoc(collection(db, table.connect), addbond);
-            post.connect = getkey.id;
+            const getKey = await createFriendBond(me, bond);;
+            if (getKey.id) {
+                post.connect = getKey.id;
+            } else {
+                return reject(getKey);
+            }
         }
         const updates = {
             content: post.content,
             updated: date.now,
-            sender: user.uid,
+            sender: me.uid,
             encrypt: encrypt,
         }
         await updateDoc(doc(db, table.connect, post.connect), updates);

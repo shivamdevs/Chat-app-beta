@@ -6,7 +6,6 @@ import Loading from "./layouts/Loading";
 import './App.css';
 import Default from "./pages/Default";
 import Accounts from "myoasis-accounts";
-import { Toaster } from "react-hot-toast";
 
 function App() {
     const navigate = useNavigate();
@@ -14,7 +13,7 @@ function App() {
     const [user, loading, error] = useAuthState(auth);
 
     function navigateBack() {
-        if (location.key !== "default") {
+        if (location.key !== "default" && location.pathname !== "/") {
             navigate(-1);
         } else {
             navigate("/", { replace: true });
@@ -27,7 +26,6 @@ function App() {
 
     return (
         <>
-            <Toaster position="bottom-center" />
             <Routes>
                 <Route path="/accounts/*" element={<Accounts onUserChange={() => navigateBack()} />} />
                 <Route path="/*" exact element={<Default />} />

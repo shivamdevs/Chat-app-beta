@@ -32,6 +32,16 @@
     text-align: center;
     margin-block: 20px;
 }
+.mbBottom a {
+    color: #3ac7f7;
+    text-decoration: none;
+    transition: .2s;
+    font-size: 500;
+    font-size: 15px;
+}
+.mbBottom a:hover {
+    color: #8be9b9;
+}
 .mbVersion {
     font-size: 12px;
     font-weight: 500;

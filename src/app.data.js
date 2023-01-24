@@ -1,8 +1,8 @@
 const app = {
     name: 'MeChat',
-    version: '1.0.0',
+    version: '0.3.b.a',
     copyright: <a href="//myoasis.tech" target="_blank" rel="noreferrer">© My Oasis Tech</a>,
-    updated: 'January 21, 2023 04:00 PM',
+    updated: 'January 17, 2023 02:00 AM',
     bucket: "chat:",
     pathname: "//myoasis.tech",
     parent: "Oasis Tech",
