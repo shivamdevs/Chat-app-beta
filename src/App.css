@@ -200,3 +200,18 @@ main.mainbody {
     cursor: pointer;
     background-color: var(--theme-red-dark);
 }
+
+.contextmenu {
+    color: #fff;
+    border: 1px solid #fff2;
+    border-radius: 5px;
+    background: var(--background-lightest);
+}
+.contextmenuitem {
+    background: var(--background-lightest);
+    padding: 15px 20px !important;
+    gap: 20px;
+}
+.contextmenuitem:hover {
+    background: var(--background-lighter);
+}

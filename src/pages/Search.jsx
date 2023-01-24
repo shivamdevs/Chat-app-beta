@@ -18,12 +18,12 @@ function Search({ back = null, navigate = null, users = [], history = [], me = n
             for (const key in users) {
                 if (Object.hasOwnProperty.call(users, key)) {
                     const user = users[key];
-                    if (user.name.toLowerCase().includes(search.toLowerCase()) || user.id === search) loop.push(user);
+                    if ((user.name.toLowerCase().includes(search.toLowerCase()) || user.uid === search) && user.uid !== me.uid) loop.push(user);
                 }
             }
             setResult(loop);
         }
-    }, [search, users]);
+    }, [me.uid, search, users]);
 
     return (
         <Section>
@@ -67,7 +67,6 @@ function Search({ back = null, navigate = null, users = [], history = [], me = n
                         </div>
                         <div className={classNames(css.usname, "ellipsis")}>{reactStringReplace(user.name, search, (match, i) => <span key={i}>{match}</span>)}</div>
                         {(me?.uid !== user.uid) && !history?.includes(user.id) && <div className={css.usdot}>New</div>}
-                        {(me?.uid === user.uid) && <div className={classNames(css.usdot, css.usdotnet)}>You</div>}
                     </div>)}
                     <div className={css.nullload}>{result.length} user{result.length > 1 ? "s" : ""} matched with the search query.</div>
                 </>}

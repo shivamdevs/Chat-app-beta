@@ -14,6 +14,7 @@ function Chats({
     user = null,
     bond = null,
     friend = null,
+    navigate = null,
     messageList = null,
     setMessageList = null,
 }) {
@@ -80,7 +81,8 @@ function Chats({
             </main>}
             {messageList && <main ref={chatbox} className={classNames("mainbody", css.chatbox)} onScroll={({target}) => setScroller(target.scrollTop < -30)}>
                 <div className={css.chatflow}>
-                    {Object.keys(messageList).map(dates => <Dateblock key={dates} friend={friend} date={dates} chats={messageList[dates]} />)}
+                    {Object.keys(messageList).length === 0 && <div className={css.nullload}>Start your conversation with {friend.name}.</div>}
+                    {Object.keys(messageList).map(dates => <Dateblock navigate={navigate} key={dates} user={user} friend={friend} date={dates} chats={messageList[dates]} />)}
                 </div>
             </main>}
             <footer className={css.messenger}>
@@ -112,27 +114,39 @@ export default Chats;
 
 function Dateblock({
     date = null,
+    user = null,
     chats = null,
     friend = null,
+    navigate = null,
 }) {
     return (
         <div className={css.chatdates}>
             <div className={css.dateblock}>
                 <div className={css.dateitem}>{getDisplayDate(+date, true)}</div>
             </div>
-            {chats.map(chat => <Message key={chat.id} friend={friend} chat={chat} />)}
+            {chats.map(chat => <Message user={user} navigate={navigate} key={chat.id} friend={friend} chat={chat} />)}
         </div>
     );
 }
 
 function Message({
     chat = null,
+    user = null,
     friend = null,
-    observer = null,
+    navigate = null,
 }) {
     const block = useRef();
     return (
-        <div className={classNames(css.chatblock, (chat.sender === friend.uid ? css.friend : css.current))} ref={block}>
+        <div className={classNames(css.chatblock, (chat.sender === user.uid ? css.current : css.friend))} ref={block}>
+            <div className={css.photo} onClick={() => navigate(`./profile/${chat.sender}`)}>
+                <img
+                    alt=""
+                    className={css.waiting}
+                    onError={({ target }) => target.classList.add(css.waiting)}
+                    onLoad={({ target }) => target.classList.remove(css.waiting)}
+                    src={((chat.sender === user.uid) ? user.photoURL : friend.profile) || "https://assets.myoasis.tech/accounts/user-no-image.svg"}
+                />
+            </div>
             {chat.pending && <span className={css.sending}><LoadSVG width={12} /></span>}
             <div className={css.chatarea}>
                 <div className={css.messagebox}>{CryptoJS.AES.decrypt(chat.content, chat.encrypt).toString(CryptoJS.enc.Utf8)}</div>
