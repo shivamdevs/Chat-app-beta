@@ -138,7 +138,7 @@ function Message({
     const block = useRef();
     return (
         <div className={classNames(css.chatblock, (chat.sender === user.uid ? css.current : css.friend))} ref={block}>
-            <div className={css.photo} onClick={() => navigate(`./profile/${chat.sender}`)}>
+            <div className={css.photo} onClick={() => navigate(`/${friend.uid}/profile/${chat.sender}`)}>
                 <img
                     alt=""
                     className={css.waiting}

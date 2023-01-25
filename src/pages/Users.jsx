@@ -11,6 +11,7 @@ import Search from './Search';
 import Section from '../layouts/Section';
 import CryptoJS from "crypto-js";
 import { ContextMenu, ContextMenuItem, ContextMenuTrigger } from 'myoasis-contextmenu';
+import { updateFriendConnect } from '../fb.chat';
 
 
 function Users({
@@ -36,9 +37,9 @@ function Users({
                         <button className="crbutton" onClick={() => navigate("/search")}><i className="far fa-search"></i></button>
                         <ContextMenuTrigger menu="profile" className={css.user} exact={false} trigger="click"><img src={user.photoURL || "https://assets.myoasis.tech/accounts/user-no-image.svg"} alt="" /></ContextMenuTrigger>
                         <ContextMenu menu="profile" className="contextmenu">
-                            <ContextMenuItem className="contextmenuitem" onClick={() => navigate("/profile/" + user.uid)}>View profile</ContextMenuItem>
-                            <ContextMenuItem className="contextmenuitem" onClick={() => navigate("/accounts/profile")}>Edit profile</ContextMenuItem>
-                            <ContextMenuItem className="contextmenuitem" onClick={() => logout()}>Logout</ContextMenuItem>
+                            <ContextMenuItem className="contextmenuitem" onClick={() => navigate("/profile/" + user.uid)}><i className="fas fa-face-viewfinder"></i><span>View profile</span></ContextMenuItem>
+                            <ContextMenuItem className="contextmenuitem" onClick={() => navigate("/accounts/profile")}><i className="fas fa-user-pen"></i><span>Edit profile</span></ContextMenuItem>
+                            <ContextMenuItem className="contextmenuitem" onClick={() => logout()}><i className="fas fa-power-off"></i><span>Logout</span></ContextMenuItem>
                         </ContextMenu>
                     </div>}
                 </header>
@@ -58,7 +59,7 @@ function Users({
                                 <div className={css.uhData} onClick={() => navigate(`/${item.to}`)}>
                                     <div className={css.uhRow}>
                                         <div className={classNames('ellipsis', css.uhTopname)}>{item.by?.name}</div>
-                                        <div className={css.uhToptime}>{getDisplayDate(item.at)}</div>
+                                        <div className={css.uhToptime}>{item.in && <i className="fas fa-thumbtack">&nbsp;&nbsp;&nbsp;</i>}{getDisplayDate(item.at)}</div>
                                     </div>
                                     <div className={css.uhRow}>
                                         <div className={classNames('ellipsis', css.uhMessage)}>{item.me && "You: "}{CryptoJS.AES.decrypt(item.on, item.en).toString(CryptoJS.enc.Utf8)}</div>
@@ -76,6 +77,10 @@ function Users({
                             </ContextMenuTrigger>
                             <ContextMenu menu={item.id} className="contextmenu">
                                 <ContextMenuItem className="contextmenuitem" onClick={(data) => navigate(`/profile/${data}`)} data={item.to}><i className="fas fa-fw fa-address-card"></i><span>View profile</span></ContextMenuItem>
+                                <ContextMenuItem className="contextmenuitem" onClick={(data) => updateFriendConnect(data.id, {pinned: !data.in})} data={item}>
+                                    {item.in && <><i className="fas fa-fw fa-link-slash"></i><span>Unpin contact</span></>}
+                                    {!item.in && <><i className="fas fa-fw fa-thumbtack"></i><span>Pin contact</span></>}
+                                </ContextMenuItem>
                                 <ContextMenuItem className="contextmenuitem" onClick={(data) => navigate(`/deletechat/${data}`)} data={item.to}><i className="fas fa-fw fa-delete-left"></i><span>Delete all chats</span></ContextMenuItem>
                                 <ContextMenuItem className="contextmenuitem" onClick={(data) => navigate(`/deleteuser/${data}`)} data={item.to}><i className="fas fa-fw fa-user-slash"></i><span>Delete contact</span></ContextMenuItem>
                             </ContextMenu>

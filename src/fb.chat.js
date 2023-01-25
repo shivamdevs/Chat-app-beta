@@ -4,6 +4,7 @@ import app from "./app.data";
 import { db } from "./fb.user";
 import uniqid from 'uniqid';
 import CryptoJS from "crypto-js";
+import sortBy from "sort-by";
 
 
 const table = {
@@ -30,7 +31,13 @@ export default function snapShot(user, resolve, reject) {
             history: {
                 event: snapHistory(user, snap => {
                     if (querysnap.history.values === null || snap.docChanges().length) {
-                        querysnap.history.values = snap.docs.sort((a, b) => a.data().updated - b.data().updated).reverse();
+                        let docs = [];
+                        for (const doc of snap.docs) docs.push({ ...doc.data(), id: doc.id });
+                        docs = docs.sort(sortBy("updated")).reverse();
+                        const res = [];
+                        for (const doc of docs) if (doc.pinned) res.push(doc);
+                        for (const doc of docs) if (!doc.pinned) res.push(doc);
+                        querysnap.history.values = res;
                         callback();
                     }
                 }, reject),
@@ -55,8 +62,7 @@ export default function snapShot(user, resolve, reject) {
             users: {},
         };
         if (querysnap.history.values) {
-            querysnap.history.values.forEach(shots => {
-                const data = shots.data();
+            querysnap.history.values.forEach(data => {
                 const to = (() => {
                     if (user.uid === data.users[0]) return data.users[1];
                     if (user.uid === data.users[1]) return data.users[0];
@@ -66,18 +72,19 @@ export default function snapShot(user, resolve, reject) {
                     const ops = querysnap.users.values[to];
                     return ops;
                 })();
-                result.bondid[to] = shots.id;
+                result.bondid[to] = data.id;
                 result.contact.push(to);
 
                 if (!data.sender) return;
                 const push = {
-                    id: shots.id,
+                    id: data.id,
                     to: to,
                     by: sender,
                     me: (data.sender === user.uid),
                     at: data.updated,
                     on: data.content,
                     en: data.encrypt,
+                    in: data.pinned,
                 };
                 result.current.push(push);
             });
@@ -175,7 +182,7 @@ export async function createFriendBond(user, friend) {
         return {
             now: d.getTime(),
             date: new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(),
-            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")}${d.getHours() < 12 ? "am" : "pm"}`,
+            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")} ${d.getHours() < 12 ? "am" : "pm"}`,
         };
     })();
     const me = { ...user };
@@ -207,7 +214,7 @@ export async function sendMessage(message, connect, user, friend, before, reject
         return {
             now: d.getTime(),
             date: new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(),
-            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")}${d.getHours() < 12 ? "am" : "pm"}`,
+            print: `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")} ${d.getHours() < 12 ? "am" : "pm"}`,
         };
     })();
     const me = { ...user };
@@ -238,10 +245,20 @@ export async function sendMessage(message, connect, user, friend, before, reject
             sender: me.uid,
             encrypt: encrypt,
         }
-        await updateDoc(doc(db, table.connect, post.connect), updates);
+        await updateFriendConnect(post.connect, updates);
         await addDoc(collection(db, table.message), post);
     } catch (error) {
         console.error(error);
         reject(error);
+    }
+}
+
+export async function updateFriendConnect(bond, updates) {
+    try {
+        bond && await updateDoc(doc(db, table.connect, bond), updates);
+        return { bond };
+    } catch (err) {
+        console.error(err);
+        return err;
     }
 }
