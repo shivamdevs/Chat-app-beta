@@ -96,8 +96,15 @@ img.waiting {
 
 
 
-
-
+.links {
+    text-decoration: none;
+    color: var(--theme-green);
+    transform: .2s;
+    font-weight: 500;
+}
+.links:hover {
+    text-decoration: underline;
+}
 
 
 

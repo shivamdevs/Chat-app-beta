@@ -41,5 +41,5 @@
     font-weight: 500;
     font-size: 17px;
     padding-inline: 10px;
-    width: calc(100% - 40px);
+    flex: 1;
 }

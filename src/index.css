@@ -64,8 +64,10 @@ img {
 
 :root {
     --theme-blue: #3ac7f7;
+    --theme-blue-trans: #3ac7f722;
     --theme-blue-dark: #0099cd;
-    --theme-green: #8be9b9;
+    --theme-green: #0d8b4a;
+    --theme-green-trans: #8be9b922;
     --theme-red: #e51010;
     --theme-red-dark: #c62828;
     --background-color: #11191f;

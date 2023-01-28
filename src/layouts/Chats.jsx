@@ -9,6 +9,7 @@ import css from './styles/Chats.module.css';
 import uniqid from 'uniqid';
 import CryptoJS from "crypto-js";
 import { getDisplayDate } from '../app.functions';
+import Linker from '../components/Linker';
 
 function Chats({
     user = null,
@@ -149,7 +150,7 @@ function Message({
             </div>
             {chat.pending && <span className={css.sending}><LoadSVG width={12} /></span>}
             <div className={css.chatarea}>
-                <div className={css.messagebox}>{CryptoJS.AES.decrypt(chat.content, chat.encrypt).toString(CryptoJS.enc.Utf8)}</div>
+                <div className={css.messagebox}><Linker className={css.links} target="_blank" rel="noopener noreferrer">{CryptoJS.AES.decrypt(chat.content, chat.encrypt).toString(CryptoJS.enc.Utf8)}</Linker></div>
                 <div className={css.timebox}>{chat.sent}</div>
             </div>
         </div>

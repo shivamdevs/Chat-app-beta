@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { createRef, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { logout } from '../fb.user';
 import { LoadSVG } from '../layouts/Loading';
@@ -26,10 +26,44 @@ function Users({
 }) {
     setTitle(chatHistory ? "Home" : "Loading");
 
+    const [selection, setSelection] = useState(false);
+    const [selectionList, setSelectionList] = useState([]);
+
+    const updateSelection = ({ target }) => {
+        setSelectionList(old => {
+            const list = [];
+            for (const key in userBondids) if (Object.hasOwnProperty.call(userBondids, key) && old.includes(userBondids[key])) list.push(userBondids[key]);
+            const val = target.value;
+            if (target.checked) {
+                list.push(val);
+            } else {
+                list.splice(list.indexOf(val), 1);
+            }
+            return list;
+        });
+    };
+    const resetSelection = (action) => {
+        const list = [...selectionList];
+        document.getElementsByName("userselection").forEach(item => item.checked && item.click());
+        setSelection(false);
+        if (action === "pin") {
+            for (const binds of list) updateFriendConnect(binds, { pinned: true });
+        } else if (action === "unpin") {
+            for (const binds of list) updateFriendConnect(binds, { pinned: false });
+        } else if (action === "clear") {
+            // for (const binds of list) updateFriendConnect(binds, { pinned: true });
+        } else if (action === "delete") {
+            const obj = {};
+            obj[user.uid] = null;
+            for (const binds of list) updateFriendConnect(binds, obj);
+        }
+    };
+
+
     return (
         <>
             <Section>
-                <header className="header">
+                {!selection && <header className="header">
                     <div className={css.headblock}>
                         <img className={css.logo} src="/logo192.png" alt="" />
                     </div>
@@ -37,12 +71,35 @@ function Users({
                         <button className="crbutton" onClick={() => navigate("/search")}><i className="far fa-search"></i></button>
                         <ContextMenuTrigger menu="profile" className={css.user} exact={false} trigger="click"><img src={user.photoURL || "https://assets.myoasis.tech/accounts/user-no-image.svg"} alt="" /></ContextMenuTrigger>
                         <ContextMenu menu="profile" className="contextmenu">
+                            <ContextMenuItem className="contextmenuitem" onClick={() => setSelection(true)}><i className="fas fa-ballot-check"></i><span>Select contacts</span></ContextMenuItem>
                             <ContextMenuItem className="contextmenuitem" onClick={() => navigate("/profile/" + user.uid)}><i className="fas fa-face-viewfinder"></i><span>View profile</span></ContextMenuItem>
                             <ContextMenuItem className="contextmenuitem" onClick={() => navigate("/accounts/profile")}><i className="fas fa-user-pen"></i><span>Edit profile</span></ContextMenuItem>
                             <ContextMenuItem className="contextmenuitem" onClick={() => logout()}><i className="fas fa-power-off"></i><span>Logout</span></ContextMenuItem>
                         </ContextMenu>
                     </div>}
-                </header>
+                </header>}
+                {selection && <header className="header">
+                    <div className={css.slflow}>
+                        <button className="crbutton" onClick={resetSelection}>
+                            <i className="far fa-times"></i>
+                        </button>
+                        <span className={css.sltitle}>({selectionList.length} / {chatHistory.length})</span>
+                    </div>
+                    <div className={css.slflow}>
+                        <button className="crbutton" onClick={() => resetSelection("pin")} disabled={(selectionList.length === 0)}>
+                            <i className="fas fa-thumbtack"></i>
+                        </button>
+                        <button className="crbutton" onClick={() => resetSelection("unpin")} disabled={(selectionList.length === 0)}>
+                            <i className="fas fa-link-slash"></i>
+                        </button>
+                        <button className="crbutton" onClick={() => resetSelection("clear")} disabled={(selectionList.length === 0)}>
+                            <i className="fas fa-delete-left"></i>
+                        </button>
+                        <button className="crbutton" onClick={() => resetSelection("delete")} disabled={(selectionList.length === 0)}>
+                            <i className="fas fa-user-slash"></i>
+                        </button>
+                    </div>
+                </header>}
                 <main className={classNames("mainbody", css.container)}>
                     {!chatHistory && <div className={css.nullload}>
                         <LoadSVG />
@@ -54,15 +111,17 @@ function Users({
                     </div>}
                     {chatHistory?.length > 0 && chatHistory.map(item => {
                         item.by = item.by || usersDetails[item.to];
+                        const check = createRef();
                         return (<div key={item.id} className={css.colrow}>
-                            <ContextMenuTrigger menu={item.id} className={css.column} exact={false}>
-                                <div className={css.uhData} onClick={() => navigate(`/${item.to}`)}>
+                            <ContextMenuTrigger menu={item.id} className={css.column} exact={false} onContextMenu={() => !selection}>
+                                <input className={css.checker} type="checkbox" onChange={updateSelection} name="userselection" value={item.id} ref={check} />
+                                <div className={css.uhData} onClick={() => (selection ? check.current.click() : navigate(`/${item.to}`))}>
                                     <div className={css.uhRow}>
-                                        <div className={classNames('ellipsis', css.uhTopname)}>{item.by?.name}</div>
+                                        <div className={classNames('ellipsis', css.uhTopname, (item.vc ? "" : css.uhInvalid))}>{item.by?.name}</div>
                                         <div className={css.uhToptime}>{item.in && <i className="fas fa-thumbtack">&nbsp;&nbsp;&nbsp;</i>}{getDisplayDate(item.at)}</div>
                                     </div>
                                     <div className={css.uhRow}>
-                                        <div className={classNames('ellipsis', css.uhMessage)}>{item.me && "You: "}{CryptoJS.AES.decrypt(item.on, item.en).toString(CryptoJS.enc.Utf8)}</div>
+                                        <div className={classNames('ellipsis', css.uhMessage)}>{item.me && "You: "}{CryptoJS.AES.decrypt(item.on, item.en).toString(CryptoJS.enc.Utf8).slice(0, 80)}</div>
                                     </div>
                                 </div>
                                 <div className={css.uhPhoto} onClick={() => navigate(`/preview/${item.by.uid}`)}>
@@ -95,7 +154,8 @@ function Users({
             </Section>
             {!loading && <Routes>
                 <Route path="/:bondid/*" element={<Panel back={back} navigate={navigate} user={user} userBondids={userBondids} usersDetails={usersDetails} />} />
-                <Route path='/preview/*' element={<Preview back={back} usersDetails={usersDetails} />} />
+                <Route path='/preview/:userid' element={<Preview back={back} navigate={navigate} usersDetails={usersDetails} />} />
+                <Route path='/profile/:userid' element={<Preview back={back} navigate={navigate} usersDetails={usersDetails} />} />
                 <Route path='/search' element={<Search me={user} navigate={navigate} back={back} users={usersDetails} history={usersHistory} />} />
             </Routes>}
         </>

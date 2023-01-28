@@ -8,6 +8,7 @@ import sortBy from 'sort-by';
 import { setTitle } from '../app.functions';
 import { createFriendBond, snapMessageChannel, unsnapMessageChannel } from '../fb.chat';
 import Chats from '../layouts/Chats';
+import Invalid from '../layouts/Invalid';
 import Section from '../layouts/Section';
 import Preview from './Preview';
 import css from './styles/Panel.module.css';
@@ -81,15 +82,7 @@ function Panel({
                     <Route path='/preview/*' element={<Preview back={back} />} />
                 </Routes>
             </Section>}
-            {buffer === false && <Section className="transparent">
-                <main className="mainbody">
-                    <div className="tstitle">Invalid token</div>
-                    <div className="tsbody">This URL is invalid or has expired.</div>
-                    <div className="tsoptions">
-                        <button className="tsbutton" type="button" onClick={back}>Go back</button>
-                    </div>
-                </main>
-            </Section>}
+            {buffer === false && <Invalid back={back} />}
         </>
     );
 }

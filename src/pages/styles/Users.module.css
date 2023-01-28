@@ -9,6 +9,18 @@
     align-items: center;
 }
 
+.slflow {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    align-items: center;
+}
+.sltitle {
+    font-size: 15px;
+    font-weight: 500;
+    margin-left: 20px;
+}
+
 .logo {
     width: 40px;
 }
@@ -18,16 +30,16 @@
 }
 
 .user {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     padding: 2px;
     z-index: 1;
     cursor: pointer;
+    background-color: var(--background-lightest);
+    border-radius: 50%;
 }
 
 .user>img {
-    background-color: var(--background-lightest);
-    padding: 4px;
     border-radius: 50%;
     min-width: 100%;
     min-height: 100%;
@@ -36,7 +48,7 @@
 .user:has(> img.waiting) {
     background-image: url("https://assets.myoasis.tech/accounts/user-no-image.svg");
     background-position: center;
-    background-size: 50px;
+    background-size: 36px;
     background-repeat: no-repeat;
 }
 
@@ -54,11 +66,13 @@
 .nullload>svg {
     width: 40px;
 }
+
 .colrow {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
+
 .column {
     --pattern: 64px;
     display: flex;
@@ -82,6 +96,14 @@
 
 .column>div:hover {
     background-color: var(--background-lighter);
+}
+
+.checker {
+    display: none;
+}
+
+.checker:checked+.uhData {
+    background-color: var(--theme-green-trans);
 }
 
 .uhPhoto {

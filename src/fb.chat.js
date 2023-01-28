@@ -85,6 +85,7 @@ export default function snapShot(user, resolve, reject) {
                     on: data.content,
                     en: data.encrypt,
                     in: data.pinned,
+                    vc: data[to],
                 };
                 result.current.push(push);
             });
